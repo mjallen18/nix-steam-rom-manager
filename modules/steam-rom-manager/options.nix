@@ -265,11 +265,6 @@ in {
               else pkgs.${name};
             description = "Emulator package";
           };
-          binaryName = mkOption {
-            type = types.str;
-            default = "";
-            description = "Name of the emulator binary (defaults to automatically detected from package)";
-          };
           romFolder = mkOption {
             type = types.str;
             default = "";
