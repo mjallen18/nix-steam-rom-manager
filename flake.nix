@@ -15,7 +15,7 @@
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
     in
     {
-      homeManagerModules.default = import ./modules;
+      homeManagerModules.default = import ./modules/steam-rom-manager;
       homeManagerModules.steam-rom-manager = import ./modules/steam-rom-manager;
     };
 }
