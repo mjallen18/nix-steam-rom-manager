@@ -239,13 +239,31 @@ in {
     };
 
     emulators = mkOption {
-      type = types.attrsOf (types.submodule {
+      type = types.attrsOf (types.submodule ({ name, ... }: {
         options = {
           enable = mkEnableOption "emulator configuration";
           package = mkOption {
             type = types.package;
-            default = null;
-            description = "Emulator package (defaults to common configuration if not set)";
+            default = 
+              if name == "pcsx2" then pkgs.pcsx2
+              else if name == "citra" then pkgs.citra-nightly
+              else if name == "yuzu" then pkgs.yuzu
+              else if name == "ryujinx" then pkgs.ryujinx-greemdev
+              else if name == "rpcs3" then pkgs.rpcs3
+              else if name == "dolphin-emu" then pkgs.dolphinEmu
+              else if name == "duckstation" then pkgs.duckstation
+              else if name == "melonDS" then pkgs.melonDS
+              else if name == "cemu" then pkgs.cemu
+              else if name == "ppsspp" then pkgs.ppsspp
+              else if name == "mame" then pkgs.mame
+              else if name == "dosbox" then pkgs.dosbox
+              else if name == "snes9x" then pkgs.snes9x-gtk
+              else if name == "mgba" then pkgs.mgba
+              else if name == "mupen64plus" then pkgs.mupen64plus
+              else if name == "retroarch" then pkgs.retroarch
+              else if name == "flycast" then pkgs.flycast
+              else pkgs.${name};
+            description = "Emulator package";
           };
           binaryName = mkOption {
             type = types.str;
@@ -268,7 +286,7 @@ in {
             description = "Additional emulator arguments";
           };
         };
-      });
+      }));
       default = {};
       description = "Emulator configurations";
     };

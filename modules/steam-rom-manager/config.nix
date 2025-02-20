@@ -35,96 +35,118 @@ let
       romFolder = "switch";
       fileTypes = [ ".nca" ".NCA" ".nro" ".NRO" ".nso" ".NSO" ".nsp" ".NSP" ".xci" ".XCI" ];
       package = pkgs.ryujinx;
+      binaryName = "Ryujinx";
     };
     yuzu = {
       romFolder = "switch";
       fileTypes = [ ".nsp" ".NSP" ".xci" ".XCI" ];
       package = pkgs.yuzu;
+      binaryName = "yuzu";
     };
     pcsx2 = {
       romFolder = "ps2";
       fileTypes = [ ".iso" ".ISO" ".bin" ".BIN" ".chd" ".CHD" ];
       package = pkgs.pcsx2;
+      binaryName = "pcsx2";
     };
     rpcs3 = {
       romFolder = "ps3";
       fileTypes = [ ".iso" ".ISO" ".bin" ".BIN" ".pkg" ".PKG" ];
       package = pkgs.rpcs3;
+      binaryName = "rpcs3";
     };
     dolphin-emu = {
       romFolder = "gc";
       fileTypes = [ ".iso" ".ISO" ".gcm" ".GCM" ".ciso" ".CISO" ];
-      package = pkgs.dolphinEmu;
+      package = pkgs.dolphin-emu;
+      binaryName = "dolphin-emu";
     };
     duckstation = {
       romFolder = "psx";
       fileTypes = [ ".iso" ".ISO" ".bin" ".BIN" ".chd" ".CHD" ".pbp" ".PBP" ];
       package = pkgs.duckstation;
+      binaryName = "duckstation";
     };
     melonDS = {
       romFolder = "nds";
       fileTypes = [ ".nds" ".NDS" ];
       package = pkgs.melonDS;
+      binaryName = "melonDS";
     };
     cemu = {
       romFolder = "wiiu";
       fileTypes = [ ".wud" ".WUD" ".wux" ".WUX" ".rpx" ".RPX" ];
       package = pkgs.cemu;
+      binaryName = "cemu";
     };
     ppsspp = {
       romFolder = "psp";
       fileTypes = [ ".iso" ".ISO" ".cso" ".CSO" ".pbp" ".PBP" ];
       package = pkgs.ppsspp;
+      binaryName = "ppsspp";
     };
     mame = {
       romFolder = "arcade";
       fileTypes = [ ".zip" ".ZIP" ".7z" ".7Z" ];
       package = pkgs.mame;
+      binaryName = "mame";
     };
     dosbox = {
       romFolder = "dos";
       fileTypes = [ ".exe" ".EXE" ".bat" ".BAT" ".com" ".COM" ];
       package = pkgs.dosbox;
+      binaryName = "dosbox";
     };
     snes9x = {
       romFolder = "snes";
       fileTypes = [ ".smc" ".SMC" ".sfc" ".SFC" ".fig" ".FIG" ];
       package = pkgs.snes9x-gtk;
+      binaryName = "snes9x";
     };
     mgba = {
       romFolder = "gba";
       fileTypes = [ ".gba" ".GBA" ];
       package = pkgs.mgba;
+      binaryName = "mgba";
     };
     mupen64plus = {
       romFolder = "n64";
       fileTypes = [ ".n64" ".N64" ".v64" ".V64" ".z64" ".Z64" ];
       package = pkgs.mupen64plus;
+      binaryName = "mupen64plus";
     };
     retroarch = {
       romFolder = "retroarch";
       fileTypes = [ ".zip" ".ZIP" ".7z" ".7Z" ".iso" ".ISO" ".bin" ".BIN" ".chd" ".CHD" ];
       package = pkgs.retroarch;
+      binaryName = "retroarch";
     };
     flycast = {
       romFolder = "dreamcast";
       fileTypes = [ ".gdi" ".GDI" ".cdi" ".CDI" ".chd" ".CHD" ];
       package = pkgs.flycast;
+      binaryName = "flycast";
     };
     citra = {
       romFolder = "3ds";
       fileTypes = [ ".3ds" ".3DS" ".cia" ".CIA" ".cxi" ".CXI" ];
       package = pkgs.citra-nightly;
+      binaryName = "citra";
     };
   };
 
   # Create parser configuration
   mkParserConfig = name: emu: 
   let
-    # Use the provided package or fall back to the default
-    package = if emu ? package then emu.package else commonEmulatorConfigs.${name}.package;
+    # Get the default config if it exists
+    defaultConfig = commonEmulatorConfigs.${name} or {};
+    # Merge the provided config with defaults
+    finalConfig = defaultConfig // emu;
+    
+    # Use the provided package or fall back to the default if available
+    package = emu.package;
     # Get the binary name dynamically
-    binaryName = findMainBinary package emu.binaryName;
+    binaryName = findMainBinary package (finalConfig.binaryName or "");
     
     orderedConfig = [
       # Basic parser configuration
