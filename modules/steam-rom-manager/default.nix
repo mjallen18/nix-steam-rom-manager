@@ -114,6 +114,12 @@ let
       fileTypes = [ ".3ds" ".3DS" ".cia" ".CIA" ".cxi" ".CXI" ];
       package = pkgs.citra-nightly;
     };
+    "Non-SRM Shortcuts" = {
+      parserType = "Non-SRM Shortcuts";
+      romFolder = "";
+      fileTypes = [ ];
+      package = pkgs.steam;
+    };
   };
 
   # Create parser configuration
@@ -126,32 +132,32 @@ let
     
     orderedConfig = [
       # Basic parser configuration
-      { name = "parserType"; value = "Glob"; }
-      { name = "configTitle"; value = name; }
+      { name = "parserType"; value = emu.parserType; }
+      { name = "configTitle"; value = emu.configTitle; }
       { name = "steamDirectory"; value = "\${steamdirglobal}"; }
       { name = "romDirectory"; value = "${cfg.environmentVariables.romsDirectory}/${if emu.romFolder != "" then emu.romFolder else commonEmulatorConfigs.${name}.romFolder}"; }
-      { name = "steamCategories"; value = [""]; }
+      { name = "steamCategories"; value = emu.steamCategories; }
       
       # Executable configuration
       { name = "executableArgs"; value = emu.extraArgs; }
-      { name = "executableModifier"; value = "\"\${exePath}\""; }
+      { name = "executableModifier"; value = emu.executableModifier; }
       { name = "startInDirectory"; value = "${cfg.environmentVariables.romsDirectory}/${if emu.romFolder != "" then emu.romFolder else commonEmulatorConfigs.${name}.romFolder}"; }
-      { name = "titleModifier"; value = "\${fuzzyTitle}"; }
+      { name = "titleModifier"; value = emu.titleModifier; }
       
       # Controller settings
       { name = "fetchControllerTemplatesButton"; value = null; }
       { name = "removeControllersButton"; value = null; }
-      { name = "steamInputEnabled"; value = "1"; }
+      { name = "steamInputEnabled"; value = if emu.steamInputEnabled then "1" else "0"; }
       
       # Image provider configuration
       { name = "imageProviders"; value = cfg.enabledProviders; }
-      { name = "onlineImageQueries"; value = [ "\${fuzzyTitle}" ]; }
-      { name = "imagePool"; value = "\${fuzzyTitle}"; }
+      { name = "onlineImageQueries"; value = emu.onlineImageQueries; }
+      { name = "imagePool"; value = emu.imagePool; }
       
       # DRM and user account settings
-      { name = "drmProtect"; value = false; }
+      { name = "drmProtect"; value = emu.drmProtected; }
       { name = "userAccounts"; value = {
-        specifiedAccounts = [ "Global" ];
+        specifiedAccounts = emu.userAccounts;
       }; }
       
       # Parser-specific settings
@@ -162,8 +168,8 @@ let
       # Executable details
       { name = "executable"; value = {
         path = "${package}/bin/${binaryName}";
-        shortcutPassthrough = false;
-        appendArgsToExecutable = true;
+        shortcutPassthrough = emu.shortcutPassthrough;
+        appendArgsToExecutable = emu.appendArgsToExecutable;
       }; }
       
       # Title and fuzzy matching configuration

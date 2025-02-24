@@ -262,23 +262,94 @@ in {
               else if name == "mupen64plus" then pkgs.mupen64plus
               else if name == "retroarch" then pkgs.retroarch
               else if name == "flycast" then pkgs.flycast
+              else if name == "Non-SRM Shortcuts" then pkgs.steam
               else pkgs.${name};
             description = "Emulator package";
+          };
+          parserType = mkOption {
+            type = types.str;
+            default = "Glob";
+            description = "Parser type";
+          };
+          configTitle = mkOption {
+            type = types.str;
+            default = name;
+            description = "Configuration title";
           };
           romFolder = mkOption {
             type = types.str;
             default = "";
             description = "Name of the ROM folder (defaults to common configuration)";
           };
-          fileTypes = mkOption {
+          steamCategories = mkOption {
             type = types.listOf types.str;
-            default = [];
-            description = "List of ROM file types (defaults to common configuration)";
+            default = [""];
+            description = "List of Steam categories";
           };
           extraArgs = mkOption {
             type = types.str;
             default = "--fullscreen \"\${filePath}\"";
             description = "Additional emulator arguments";
+          };
+          executableModifier = mkOption {
+            type = types.str;
+            default = "\"\${exePath}\"";
+            description = "Executable modifier";
+          };
+          titleModifier = mkOption {
+            type = types.str;
+            default = "\${fuzzyTitle}";
+            description = "Title modifier";
+          };
+          # fetchControllerTemplatesButton = mkOption {
+          #   type = types.str;
+          #   default = null;
+          #   description = "Fetch controller templates button";
+          # };
+          # removeControllersButton = mkOption {
+          #   type = types.str;
+          #   default = null;
+          #   description = "Remove controller templates button";
+          # };
+          steamInputEnabled = mkOption {
+            type = types.bool;
+            default = false;
+            description = "Enable Steam input";
+          };
+          onlineImageQueries = mkOption {
+            type = types.listOf types.str;
+            default = [ "\${fuzzyTitle}" ];
+            description = "List of online image queries";
+          };
+          imagePool = mkOption {
+            type = types.str;
+            default = "\${fuzzyTitle}";
+            description = "image pool";
+          };
+          drmProtected = mkOption {
+            type = types.bool;
+            default = false;
+            description = "DRM protected";
+          };
+          userAccounts = mkOption {
+            type = types.listOf types.str;
+            default = [ "Global" ];
+            description = "List of user accounts";
+          };
+          fileTypes = mkOption {
+            type = types.listOf types.str;
+            default = [];
+            description = "List of ROM file types (defaults to common configuration)";
+          };
+          shortcutPassthrough = mkOption {
+            type = types.bool;
+            default = false;
+            description = "Enable shortcut passthrough";
+          };
+          appendArgsToExecutable = mkOption {
+            type = types.bool;
+            default = true;
+            description = "Append arguments to executable";
           };
         };
       }));
